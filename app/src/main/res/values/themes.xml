@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Splash screen theme — used at cold launch. Compose UI takes over after onCreate. -->
+    <style name="Theme.SudokuApp" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/ic_launcher_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/Theme.SudokuApp.Main</item>
+    </style>
+
+    <style name="Theme.SudokuApp.Main" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>

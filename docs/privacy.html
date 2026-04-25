@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Niner — Privacy Policy</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 720px;
+            margin: 40px auto;
+            padding: 0 20px;
+            line-height: 1.6;
+            color: #1a1c1e;
+        }
+        h1 { color: #2962ff; font-size: 32px; margin-bottom: 8px; }
+        h2 { color: #1a1c1e; font-size: 20px; margin-top: 32px; border-bottom: 2px solid #d1e4ff; padding-bottom: 4px; }
+        .updated { color: #666; font-size: 14px; margin-bottom: 32px; }
+        ul { padding-left: 20px; }
+        li { margin: 6px 0; }
+        a { color: #2962ff; }
+        code { background: #f3f5f9; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+        .tldr { background: #eef3ff; border-left: 3px solid #2962ff; padding: 14px 18px; border-radius: 6px; margin: 24px 0; }
+        .footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid #eee; color: #888; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <h1>Niner Privacy Policy</h1>
+    <p class="updated">Last updated: April 24, 2026</p>
+
+    <div class="tldr">
+        <strong>The short version:</strong> Niner is a sudoku game that runs entirely on your device.
+        We don't have a server, we don't have an account system, and we don't transmit your data anywhere.
+        Your puzzles, stats, and achievements never leave your phone.
+    </div>
+
+    <h2>Data we collect</h2>
+    <p><strong>None.</strong> The app has no server, no account system, and no analytics. It does not transmit any data off your device to us or to anyone else.</p>
+
+    <h2>Data stored on your device</h2>
+    <p>The app saves the following locally in Android SharedPreferences (<code>com.ninersudoku/shared_prefs/sudoku_prefs.xml</code>) so your progress persists across launches:</p>
+    <ul>
+        <li>Your in-progress puzzle (board state, elapsed time, mistakes, hints used)</li>
+        <li>Your statistics (games played, won, best times, win rate per difficulty + mode)</li>
+        <li>Your unlocked achievements and the date each one was unlocked</li>
+        <li>Your daily-streak history (which days you've solved the daily puzzle)</li>
+        <li>Your preferences (theme, colour-blind palette, sound on/off, peer highlighting, etc.)</li>
+    </ul>
+    <p>This data never leaves your device. It is not synced, backed up to our servers, or shared with any third party.</p>
+
+    <p>You can erase all stored data at any time by tapping <strong>Reset all data</strong> at the bottom of the Statistics screen, or by clearing app data in Android Settings → Apps → Niner → Storage → Clear data.</p>
+
+    <h2>Permissions</h2>
+    <p>Niner requests <strong>no runtime permissions</strong>. The app does not access:</p>
+    <ul>
+        <li>The internet</li>
+        <li>Your contacts, calendar, photos, location, microphone, or camera</li>
+        <li>Any other personal information</li>
+    </ul>
+    <p>The app's <code>AndroidManifest.xml</code> declares no <code>&lt;uses-permission&gt;</code> entries.</p>
+
+    <h2>What we don't collect</h2>
+    <ul>
+        <li><strong>No analytics.</strong> No Google Analytics, Firebase Analytics, Mixpanel, or any other tracking SDK.</li>
+        <li><strong>No advertising.</strong> No ads, no ad SDKs, no tracking pixels.</li>
+        <li><strong>No personal information.</strong> We never ask for your name, email, phone number, or any account credentials.</li>
+        <li><strong>No location data.</strong> The app does not request or use your location.</li>
+        <li><strong>No device fingerprinting.</strong> We don't collect IMEI, advertising ID, or hardware fingerprints.</li>
+        <li><strong>No crash reporting.</strong> No Crashlytics, Sentry, or other crash telemetry.</li>
+    </ul>
+
+    <h2>Third-party services</h2>
+    <p>Niner uses no third-party SDKs, analytics frameworks, ad networks, or crash reporters. There is no telemetry of any kind.</p>
+    <p>The Android Auto Backup feature (provided by the Android operating system, not by us) may include the app's preferences in your device's regular backup if you have backups enabled. This backup is governed by Google's privacy policy, not ours, and we do not have access to it.</p>
+
+    <h2>Children's privacy</h2>
+    <p>Niner does not knowingly collect any personal information from anyone, including children under 13. The app is suitable for all ages.</p>
+
+    <h2>Data deletion</h2>
+    <p>To delete all your data, uninstall the app. All locally stored data is removed when you uninstall. We have no server-side database holding your progress.</p>
+
+    <h2>Changes to this policy</h2>
+    <p>If we ever change how the app handles data, we will update this policy and the "Last updated" date above. Material changes will also be noted in the app's release notes on Google Play.</p>
+
+    <h2>Contact</h2>
+    <p>Questions about this privacy policy? Email <a href="mailto:rayjack.cb@gmail.com">rayjack.cb@gmail.com</a></p>
+
+    <div class="footer">
+        Niner — the daily sudoku. Offline by design, private by default.
+    </div>
+</body>
+</html>
