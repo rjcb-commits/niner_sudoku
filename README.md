@@ -17,16 +17,16 @@
 
 ## Why Niner exists
 
-Most sudoku apps in 2026 are a graveyard of full-screen interstitial ads, "remove ads for $4.99" upsells, push notifications nagging you to come back, and analytics SDKs reporting every cell tap to a third party.
+Most sudoku apps on the Play Store bury the puzzle under interstitial ads, "remove ads" upsells, and analytics SDKs that track every cell tap. The puzzle itself is fine. Everything around it isn't.
 
-Niner is what a sudoku app should be: a puzzle, a board, and the time it takes to solve it. **Nothing else.**
+Niner is the opposite. A puzzle, a board, and the time it takes to solve it.
 
-- **No ads.** Not even one. Not "remove ads" upsells.
+- **No ads.** Not even one. No upsells.
 - **No accounts.** No login, no email, no cloud.
-- **No internet permission.** The `AndroidManifest.xml` declares zero `<uses-permission>` entries — Niner literally cannot phone home.
-- **No third-party SDKs.** No analytics, no crash reporters, no ad networks, no telemetry of any kind.
+- **No internet permission.** The `AndroidManifest.xml` declares zero `<uses-permission>` entries. The app cannot make a network call.
+- **No third-party SDKs.** No analytics, no crash reporters, no ad networks.
 
-Your puzzles, stats, and achievements live in a single SharedPreferences file on your device. Uninstall the app and they're gone — there's no server-side data because there's no server.
+Your puzzles, stats, and achievements live in a single SharedPreferences file on your device. Uninstall the app and they're gone. No server-side data, no shadow copy.
 
 ---
 
@@ -49,20 +49,20 @@ Your puzzles, stats, and achievements live in a single SharedPreferences file on
 
 - **Five hand-tuned colour themes** × light/dark variants (Ember, Electric, Neon Night, Citrus Punch, Hyperdrive)
 - **Six celebration styles** — Confetti, Fireworks, Bubbles, Cherry Blossoms, Emoji Rain, Minimal
-- **Wrong entries don't stick to the board** — they shake and vanish, so the board always reflects what you know
+- **Wrong entries don't stick to the board.** They shake and vanish, so the board always reflects what you actually know.
 - **Peer + same-digit highlighting** for quick visual scanning
 - **Daily-streak heatmap** with empty-state preview grid
 - **Animated mini-grid loader** during puzzle generation
 - **Sequenced sound chimes** via Android's `ToneGenerator` (no bundled audio assets)
-- **Loss-reason-aware celebration** — gave-up, mistake-limit, and Speed-timeout each get their own title/subtitle/emoji
-- **Cage-aware hint engine in Killer** — the hint dialog explains in cage terms when cage constraints alone narrow a cell to one value
+- **Loss-reason-aware celebrations.** Gave-up, mistake-limit, and Speed-timeout each get their own title, subtitle, and emoji.
+- **Cage-aware hints in Killer.** When the cage constraint alone narrows a cell to one digit, the hint dialog explains in cage terms instead of pretending it's a regular naked single.
 
 ### Accessibility
 
 - **Colour-blind palette** option (amber for hints, dark orange for errors, dot pattern in the heatmap)
 - **Large-text toggle** for cell values + notes
 - **Centered-notes** layout option for users who prefer single-row pencil marks
-- **TalkBack semantic overlay** on the board canvas — every cell announces row, column, current value, and (in Killer) cage sum
+- **TalkBack semantic overlay** on the board canvas. Every cell announces row, column, current value, and (in Killer) cage sum.
 - **Light + dark mode** controlled by system or pinned to either
 
 ---
@@ -121,7 +121,7 @@ app/src/main/java/com/ninersudoku/
 - **`org.json` over `kotlinx.serialization`.** The persistence surface is small (saved game, stats, achievements). `org.json` ships with Android and saves an entire serialisation plugin from being added to the build.
 - **Wrong entries shake but don't stick.** A wrong digit increments the mistake counter and triggers a board shake, but the cell stays empty. Removes the awkward "I see a 7 here but I know it's wrong, do I leave it?" loop.
 - **Killer cages are strictly 2 or 3 cells.** Single-cell cages would double as pre-filled givens and dilute the Killer identity. Larger cages slow the solve loop without adding interesting reasoning. Strict 2- or 3-cell cages keep deductions tractable. A topology-trapped orphan triggers a regen rather than a 4-cell exception.
-- **Killer uses fewer starting clues than Classic** at the same difficulty (32 vs 50 at Beginner, 9 vs 24 at Expert) — cage sums carry part of the deduction load.
+- **Killer uses fewer starting clues than Classic** at the same difficulty (32 vs 50 at Beginner, 9 vs 24 at Expert). Cage sums carry part of the deduction load.
 - **The Killer hint engine is cage-aware.** When the cage constraint alone narrows a cell to one digit, the hint dialog explains in cage terms ("This cage needs 14. With 9 already in, the last cell must be 5") instead of pretending it's a standard naked single.
 - **"New puzzle" generates fresh, never restarts the same puzzle.** A "restart this puzzle" button would let players pre-scout, then run again to fake a best time or unlock Perfectionist/Flawless cheaply. The overflow menu always ships a different puzzle.
 - **Process-death restore via `SharedPreferences`.** Every cell entry persists the full game state to a single key (`saved_game`). `am force-stop` + relaunch lands the player on the menu with a Continue card pointing at the exact board they left.
@@ -175,7 +175,7 @@ Build:
 ./gradlew assembleRelease     # APK for sideloading
 ```
 
-Without a keystore, the release build fails loudly with `SigningConfig "release" is missing required property "storeFile"` — that's intentional, it stops accidentally shipping unsigned artefacts.
+Without a keystore, the release build fails loudly with `SigningConfig "release" is missing required property "storeFile"`. That's intentional. It stops you from accidentally shipping unsigned artefacts.
 
 ---
 
@@ -206,7 +206,7 @@ Things deferred for v1.x:
 
 ## License
 
-[MIT](LICENSE) — feel free to fork, learn from, or remix.
+[MIT](LICENSE). Fork it, learn from it, remix it.
 
 ---
 
