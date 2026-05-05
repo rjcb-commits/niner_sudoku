@@ -17,10 +17,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.ninersudoku.prefs.DisplayPreferences
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,6 +47,7 @@ fun NumberPad(
     modifier: Modifier = Modifier
 ) {
     val cs = MaterialTheme.colorScheme
+    val autoRuleOut by DisplayPreferences.autoRuleOut.collectAsState()
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -55,8 +58,10 @@ fun NumberPad(
             val remaining = remainingCounts[n]
             val sated = remaining == 0
             // A digit is "illegal" for the currently-selected cell if legalDigits
-            // tells us so. Sated digits are always considered effectively-illegal.
-            val isIllegal = legalDigits != null && n !in legalDigits
+            // tells us so — but we only style it that way when the user has opted in
+            // via the auto-rule-out preference (default off). Without the toggle, the
+            // player has to do the row/col/box deduction themselves.
+            val isIllegal = autoRuleOut && legalDigits != null && n !in legalDigits
             val effectivelyEnabled = enabled && !sated
             val isActive = activeDigit == n
 

@@ -84,11 +84,16 @@ data class GameState(
     }
     val hintLimit: Int get() = when (mode) {
         GameMode.COACH -> Int.MAX_VALUE
-        // Killer mode is brutal without clues — give beginners a small starter allowance.
+        // Killer is genuinely harder than Classic at the same difficulty — the cage layer
+        // adds reasoning load and the clue count is already reduced (Expert ships with
+        // only 9 starting clues). Give the player a more generous hint allowance.
         GameMode.KILLER -> when (difficulty) {
             Difficulty.BEGINNER -> 5
-            Difficulty.EASY -> 3
-            else -> 1
+            Difficulty.EASY -> 4
+            Difficulty.MEDIUM -> 3
+            Difficulty.HARD -> 2
+            Difficulty.EXPERT -> 2
+            null -> 0
         }
         else -> difficulty?.maxHints ?: 0
     }

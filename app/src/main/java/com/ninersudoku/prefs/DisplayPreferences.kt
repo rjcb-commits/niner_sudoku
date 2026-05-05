@@ -18,6 +18,7 @@ object DisplayPreferences {
     private const val KEY_LARGE_TEXT = "large_text"
     private const val KEY_CENTERED_NOTES = "centered_notes"
     private const val KEY_COLOR_BLIND = "color_blind"
+    private const val KEY_AUTO_RULE_OUT = "auto_rule_out"
 
     private val _themeMode = MutableStateFlow(ThemeMode.SYSTEM)
     val themeMode: StateFlow<ThemeMode> = _themeMode.asStateFlow()
@@ -37,6 +38,15 @@ object DisplayPreferences {
     private val _colorBlind = MutableStateFlow(false)
     val colorBlind: StateFlow<Boolean> = _colorBlind.asStateFlow()
 
+    /**
+     * When true, the number pad dims any digit that already conflicts with the selected
+     * cell's row/column/box — visual training wheels. Default OFF so the pad doesn't do
+     * the deduction work for the player. Coach-style assists belong on Coach mode, not
+     * sneaked into Classic / Strict / Killer.
+     */
+    private val _autoRuleOut = MutableStateFlow(false)
+    val autoRuleOut: StateFlow<Boolean> = _autoRuleOut.asStateFlow()
+
     fun init(context: Context) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         val tm = prefs.getString(KEY_THEME_MODE, null)
@@ -48,6 +58,7 @@ object DisplayPreferences {
         _largeText.value = prefs.getBoolean(KEY_LARGE_TEXT, false)
         _centeredNotes.value = prefs.getBoolean(KEY_CENTERED_NOTES, false)
         _colorBlind.value = prefs.getBoolean(KEY_COLOR_BLIND, false)
+        _autoRuleOut.value = prefs.getBoolean(KEY_AUTO_RULE_OUT, false)
     }
 
     fun setThemeMode(context: Context, mode: ThemeMode) {
@@ -78,6 +89,11 @@ object DisplayPreferences {
     fun setColorBlind(context: Context, on: Boolean) {
         _colorBlind.value = on
         edit(context) { putBoolean(KEY_COLOR_BLIND, on) }
+    }
+
+    fun setAutoRuleOut(context: Context, on: Boolean) {
+        _autoRuleOut.value = on
+        edit(context) { putBoolean(KEY_AUTO_RULE_OUT, on) }
     }
 
     private inline fun edit(context: Context, block: android.content.SharedPreferences.Editor.() -> Unit) {

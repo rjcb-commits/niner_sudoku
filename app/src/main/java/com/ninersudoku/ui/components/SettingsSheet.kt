@@ -106,6 +106,7 @@ fun SettingsSheet(
     val largeText by DisplayPreferences.largeText.collectAsState()
     val centeredNotes by DisplayPreferences.centeredNotes.collectAsState()
     val colorBlind by DisplayPreferences.colorBlind.collectAsState()
+    val autoRuleOut by DisplayPreferences.autoRuleOut.collectAsState()
     val context = LocalContext.current
 
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = sheetState) {
@@ -171,6 +172,12 @@ fun SettingsSheet(
             DisplayToggle("Color-blind palette", "Use yellow for hints and orange for errors.", colorBlind) {
                 DisplayPreferences.setColorBlind(context, it)
             }
+            Spacer(Modifier.height(8.dp))
+            DisplayToggle(
+                "Auto rule-out",
+                "Dim digits that can't go in the selected cell. Off = pure deduction.",
+                autoRuleOut
+            ) { DisplayPreferences.setAutoRuleOut(context, it) }
 
             SectionDivider()
             SectionHeader("Theme")
