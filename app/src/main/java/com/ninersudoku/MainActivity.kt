@@ -42,4 +42,14 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onDestroy() {
+        // Release ToneGenerator + sequencing scope. Without this, repeatedly
+        // opening + closing the app accumulates audio HAL handles on low-end
+        // devices. Guard with isFinishing so we don't release on rotation.
+        if (isFinishing) {
+            SoundManager.release()
+        }
+        super.onDestroy()
+    }
 }

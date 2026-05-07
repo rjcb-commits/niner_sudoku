@@ -87,9 +87,16 @@ object AchievementManager {
                 Achievement.EXPERT_MASTER -> (statsAfter[Difficulty.EXPERT]?.won ?: 0) >= 3
                 Achievement.SPEEDRUN_EASY -> won && difficulty == Difficulty.EASY && timeSeconds in 1..239
                 Achievement.SPEEDRUN_MEDIUM -> won && difficulty == Difficulty.MEDIUM && timeSeconds in 1..359
-                Achievement.HINT_FREE -> won && hints == 0
-                Achievement.PERFECTIONIST -> won && mistakes == 0
-                Achievement.FLAWLESS -> won && mistakes == 0 && hints == 0
+                // HINT_FREE is trivial in Strict (1 mistake = game over) and Coach
+                // (you simply don't tap hint). Same for PERFECTIONIST (mistakes==0
+                // is a Strict win by definition) and FLAWLESS. Restrict these to
+                // CLASSIC and SPEED so they actually represent earned skill.
+                Achievement.HINT_FREE -> won && hints == 0 &&
+                    (mode == GameMode.CLASSIC || mode == GameMode.SPEED)
+                Achievement.PERFECTIONIST -> won && mistakes == 0 &&
+                    (mode == GameMode.CLASSIC || mode == GameMode.SPEED)
+                Achievement.FLAWLESS -> won && mistakes == 0 && hints == 0 &&
+                    (mode == GameMode.CLASSIC || mode == GameMode.SPEED)
                 Achievement.PERSISTENT -> totalWon >= 50
                 Achievement.SPEED_DEMON -> won && mode == GameMode.SPEED
                 Achievement.DEMOLISHER -> won && mode == GameMode.SPEED && timeSeconds in 1..119

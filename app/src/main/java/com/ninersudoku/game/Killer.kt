@@ -44,14 +44,20 @@ object KillerGenerator {
     /**
      * Killer uses fewer starting clues than Classic at the same difficulty — cage sums
      * carry part of the deduction weight, so the puzzle stays challenging. Roughly ~65%
-     * of Classic's count at Beginner, scaling down to ~40% at Expert.
+     * of Classic's count at Beginner, scaling down to the practical floor at Expert.
+     *
+     * The proven mathematical floor for a uniquely solvable classic sudoku is 17. Below
+     * that, the underlying classic generator silently terminates without removing further
+     * cells, so a target of e.g. 9 was unreachable — Expert was effectively floored at
+     * ~22-25 actual clues. Setting realistic targets here so the hint-budget reasoning
+     * elsewhere (which scales with starting-clue count) is accurate.
      */
     private fun killerClueCount(difficulty: Difficulty): Int = when (difficulty) {
         Difficulty.BEGINNER -> 32
-        Difficulty.EASY -> 24
-        Difficulty.MEDIUM -> 18
-        Difficulty.HARD -> 13
-        Difficulty.EXPERT -> 9
+        Difficulty.EASY -> 26
+        Difficulty.MEDIUM -> 22
+        Difficulty.HARD -> 19
+        Difficulty.EXPERT -> 17
     }
 
     fun generate(difficulty: Difficulty, random: Random = Random.Default): KillerPuzzle {

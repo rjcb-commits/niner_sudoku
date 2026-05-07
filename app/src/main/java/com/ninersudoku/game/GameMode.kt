@@ -5,7 +5,7 @@ enum class GameMode(val displayName: String, val description: String) {
     NO_MISTAKES("Strict", "1 mistake ends the game"),
     COACH("Coach", "No mistake limit, unlimited hints"),
     SPEED("Speed", "Race a count-down clock"),
-    KILLER("Killer", "Cages with sums, no starting clues");
+    KILLER("Killer", "Cages with target sums");
 }
 
 /** Initial time budget (in seconds) for Speed mode, per difficulty. Each correct cell adds [SPEED_BONUS_SECONDS]. */

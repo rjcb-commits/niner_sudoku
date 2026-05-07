@@ -448,6 +448,14 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         if (cell.isGiven || state.isFinished) return
 
         if (asNote && value != 0) {
+            // Notes on a cell that already has a value would silently erase
+            // that value (cell.copy(value = 0, ...)). Real users hit this
+            // when long-press-dragging into Notes mode and tapping a digit
+            // on a filled correct cell. Treat it as a no-op rejection.
+            if (cell.value != 0) {
+                signalRejection()
+                return
+            }
             pushUndo()
             val newNotes = cell.notes.toMutableSet().apply {
                 if (!add(value)) remove(value)
@@ -548,6 +556,11 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun resumeTimer() {
+        // Don't relaunch the timer loop when the user has explicitly paused
+        // and then backgrounded → returned. Without this guard, the coroutine
+        // wakes every second forever (battery drain) while isPaused makes
+        // every iteration a no-op.
+        if (state.isPaused) return
         if (state.screen == Screen.GAME && !state.isFinished && !state.isLoading) {
             startTimer()
         }

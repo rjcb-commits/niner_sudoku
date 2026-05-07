@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.time.LocalDate
+import java.time.ZoneOffset
 import kotlin.random.Random
 
 /**
@@ -59,7 +60,13 @@ object DailyManager {
         )
     }
 
-    fun todayEpochDay(): Long = LocalDate.now().toEpochDay()
+    /**
+     * "Today" in UTC, so every player worldwide gets the same daily puzzle
+     * for the same calendar date. Using local time would mean an Auckland
+     * player sees a different puzzle than a California player and could
+     * timezone-hop to double-dip the streak.
+     */
+    fun todayEpochDay(): Long = LocalDate.now(ZoneOffset.UTC).toEpochDay()
 
     /** Generates today's daily puzzle (deterministic by date). */
     fun generateToday(): Puzzle {

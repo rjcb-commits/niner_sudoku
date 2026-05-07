@@ -43,7 +43,7 @@ object Generator {
         val grid = IntArray(81)
         // Fill the three independent diagonal 3x3 boxes first — no constraints between them.
         for (b in 0..2) fillDiagonalBox(grid, b * 3, b * 3, random)
-        check(Solver.solve(grid, randomized = true)) { "Failed to fill grid" }
+        check(Solver.solve(grid, randomized = true, random = random)) { "Failed to fill grid" }
         return grid
     }
 

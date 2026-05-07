@@ -5,6 +5,8 @@ import android.media.AudioManager
 import android.media.ToneGenerator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,7 +29,9 @@ object SoundManager {
     val enabled: StateFlow<Boolean> = _enabled.asStateFlow()
 
     private var generator: ToneGenerator? = null
-    private val scope = CoroutineScope(Dispatchers.Default)
+    // Owned scope so we can cancel it on release. Dispatchers.Default is fine
+    // since these tone calls don't touch the UI thread.
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     fun init(context: Context) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
@@ -97,5 +101,16 @@ object SoundManager {
                 null
             }
         }
+    }
+
+    /**
+     * Release the underlying [ToneGenerator] HAL handle and cancel the
+     * sequencing scope. Called from `MainActivity.onDestroy` to avoid
+     * accumulating audio handles on low-end devices.
+     */
+    fun release() {
+        try { generator?.release() } catch (_: Exception) { /* ignore */ }
+        generator = null
+        scope.cancel()
     }
 }
