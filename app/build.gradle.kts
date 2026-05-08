@@ -21,8 +21,8 @@ android {
         applicationId = "com.ninersudoku"
         minSdk = 26
         targetSdk = 35
-        versionCode = 7
-        versionName = "1.0.3"
+        versionCode = 8
+        versionName = "1.0.4"
     }
 
     signingConfigs {
@@ -79,6 +79,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material.icons.extended)
+    implementation("com.google.android.material:material:1.12.0")
     debugImplementation(libs.androidx.ui.tooling)
 
     testImplementation(libs.junit)

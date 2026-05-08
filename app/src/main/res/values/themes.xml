@@ -7,5 +7,5 @@
         <item name="postSplashScreenTheme">@style/Theme.SudokuApp.Main</item>
     </style>
 
-    <style name="Theme.SudokuApp.Main" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.SudokuApp.Main" parent="Theme.MaterialComponents.Light.NoActionBar" />
 </resources>

@@ -32,8 +32,8 @@ class MainActivity : ComponentActivity() {
         DailyManager.init(this)
         SoundManager.init(this)
         OnboardingManager.init(this)
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
         setContent {
             SudokuAppTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
