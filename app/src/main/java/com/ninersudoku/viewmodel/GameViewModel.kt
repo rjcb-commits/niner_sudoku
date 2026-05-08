@@ -471,7 +471,6 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         // Mistake path: don't write the wrong digit to the board. Just count it,
         // shake the board, pulse the counter, and check for game-over.
         if (isMistake) {
-            pushUndo()  // so the user can undo the mistake counter bump
             val newMistakes = state.mistakes + 1
             val gameOver = newMistakes >= state.mistakeLimit
             var next = state.copy(
