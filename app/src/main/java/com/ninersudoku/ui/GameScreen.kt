@@ -5,6 +5,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import android.content.res.Configuration
@@ -59,6 +60,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -360,8 +362,23 @@ fun GameScreen(viewModel: GameViewModel) {
                 Column(
                     modifier = Modifier
                         .weight(1f)
-                        .widthIn(max = 520.dp)
+                        .widthIn(max = 520.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    Image(
+                        painter = painterResource(id = com.ninersudoku.R.drawable.niner_hero),
+                        contentDescription = null,
+                        modifier = Modifier.size(72.dp).clip(RoundedCornerShape(18.dp))
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        text = "NINER",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 22.sp,
+                        letterSpacing = 4.sp,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(Modifier.height(24.dp))
                     actionRowContent()
                     Spacer(Modifier.height(16.dp))
                     numberPadContent()
