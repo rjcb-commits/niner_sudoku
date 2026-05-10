@@ -7,11 +7,14 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,6 +22,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -51,6 +55,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -226,114 +231,154 @@ fun GameScreen(viewModel: GameViewModel) {
             IntArray(10) { d -> if (d == 0) 0 else (9 - counts[d]).coerceAtLeast(0) }
         }
 
-        Box {
-            BoardView(
-                board = board,
-                selected = state.selected,
-                highlightDigit = state.highlightDigit,
-                conflicts = conflicts,
-                completedFlash = state.completedFlash,
-                cages = state.cages,
-                onCellTap = { row, col ->
-                    haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                    SoundManager.playTap()
-                    viewModel.selectCell(row, col)
-                },
-                modifier = Modifier.graphicsLayer {
-                    translationX = shakeOffset.value
-                    scaleX = winScale.value
-                    scaleY = winScale.value
-                }
-            )
-            if (winFlash.value > 0f) {
-                Box(
+        val boardContent: @Composable (Modifier) -> Unit = { boardModifier ->
+            Box(modifier = boardModifier) {
+                BoardView(
+                    board = board,
+                    selected = state.selected,
+                    highlightDigit = state.highlightDigit,
+                    conflicts = conflicts,
+                    completedFlash = state.completedFlash,
+                    cages = state.cages,
+                    onCellTap = { row, col ->
+                        haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                        SoundManager.playTap()
+                        viewModel.selectCell(row, col)
+                    },
                     modifier = Modifier
-                        .matchParentSize()
-                        .padding(8.dp)
-                        .background(MaterialTheme.colorScheme.tertiary.copy(alpha = winFlash.value * 0.4f))
+                        .fillMaxSize()
+                        .graphicsLayer {
+                            translationX = shakeOffset.value
+                            scaleX = winScale.value
+                            scaleY = winScale.value
+                        }
                 )
+                if (winFlash.value > 0f) {
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .padding(8.dp)
+                            .background(MaterialTheme.colorScheme.tertiary.copy(alpha = winFlash.value * 0.4f))
+                    )
+                }
             }
         }
 
-        Spacer(Modifier.height(12.dp))
-
-        ActionRow(
-            notesMode = state.notesMode,
-            hintsUsed = state.hintsUsed,
-            hintLimit = state.hintLimit,
-            hintsRemaining = state.hintsRemaining,
-            canUndo = state.canUndo,
-            canErase = state.canErase,
-            isFinished = state.isFinished,
-            onUndo = {
-                haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                viewModel.undo()
-            },
-            onErase = {
-                if (selectedCellIsGivenOrFinished(state)) {
-                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                    viewModel.signalRejection()
-                } else {
+        val actionRowContent: @Composable () -> Unit = {
+            ActionRow(
+                notesMode = state.notesMode,
+                hintsUsed = state.hintsUsed,
+                hintLimit = state.hintLimit,
+                hintsRemaining = state.hintsRemaining,
+                canUndo = state.canUndo,
+                canErase = state.canErase,
+                isFinished = state.isFinished,
+                onUndo = {
                     haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                    viewModel.erase()
-                }
-            },
-            onNotes = {
-                haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                viewModel.toggleNotesMode()
-            },
-            onHint = {
-                haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                viewModel.useHint()
-            }
-        )
-
-        Spacer(Modifier.height(16.dp))
-
-        NumberPad(
-            // Enabled whenever the game is active — with no cell selected, taps act as filter
-            // highlight instead of value entry.
-            enabled = !state.isFinished,
-            remainingCounts = remaining,
-            activeDigit = state.activeDigit,
-            legalDigits = state.legalDigitsForSelection,
-            onTap = { n ->
-                when {
-                    state.selected == null -> {
-                        haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        SoundManager.playTap()
-                        viewModel.toggleDigitHighlight(n)
-                    }
-                    selectedCellIsGivenOrFinished(state) -> {
+                    viewModel.undo()
+                },
+                onErase = {
+                    if (selectedCellIsGivenOrFinished(state)) {
                         haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                         viewModel.signalRejection()
-                    }
-                    else -> {
+                    } else {
                         haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        viewModel.enterValue(n)
+                        viewModel.erase()
+                    }
+                },
+                onNotes = {
+                    haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                    viewModel.toggleNotesMode()
+                },
+                onHint = {
+                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                    viewModel.useHint()
+                }
+            )
+        }
+
+        val numberPadContent: @Composable () -> Unit = {
+            NumberPad(
+                // Enabled whenever the game is active — with no cell selected, taps act as filter
+                // highlight instead of value entry.
+                enabled = !state.isFinished,
+                remainingCounts = remaining,
+                activeDigit = state.activeDigit,
+                legalDigits = state.legalDigitsForSelection,
+                onTap = { n ->
+                    when {
+                        state.selected == null -> {
+                            haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                            SoundManager.playTap()
+                            viewModel.toggleDigitHighlight(n)
+                        }
+                        selectedCellIsGivenOrFinished(state) -> {
+                            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                            viewModel.signalRejection()
+                        }
+                        else -> {
+                            haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                            viewModel.enterValue(n)
+                        }
+                    }
+                },
+                onLongPress = { n ->
+                    when {
+                        state.selected == null -> {
+                            haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                            SoundManager.playTap()
+                            viewModel.toggleDigitHighlight(n)
+                        }
+                        selectedCellIsGivenOrFinished(state) -> {
+                            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                            viewModel.signalRejection()
+                        }
+                        else -> {
+                            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                            viewModel.enterValue(n, asNote = !state.notesMode)
+                        }
                     }
                 }
-            },
-            onLongPress = { n ->
-                when {
-                    state.selected == null -> {
-                        haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        SoundManager.playTap()
-                        viewModel.toggleDigitHighlight(n)
-                    }
-                    selectedCellIsGivenOrFinished(state) -> {
-                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                        viewModel.signalRejection()
-                    }
-                    else -> {
-                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                        viewModel.enterValue(n, asNote = !state.notesMode)
-                    }
+            )
+        }
+
+        val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+        if (isLandscape) {
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                boardContent(
+                    Modifier
+                        .fillMaxHeight()
+                        .aspectRatio(1f)
+                )
+                Spacer(Modifier.width(16.dp))
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .widthIn(max = 520.dp)
+                ) {
+                    actionRowContent()
+                    Spacer(Modifier.height(16.dp))
+                    numberPadContent()
                 }
             }
-        )
-
-        Spacer(Modifier.height(16.dp))
+        } else {
+            boardContent(
+                Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f)
+            )
+            Spacer(Modifier.height(12.dp))
+            actionRowContent()
+            Spacer(Modifier.height(16.dp))
+            numberPadContent()
+            Spacer(Modifier.height(16.dp))
+        }
     }
 
     if (state.isPaused && !state.isFinished) {
