@@ -56,6 +56,8 @@ Your puzzles, stats, and achievements live in a single SharedPreferences file on
 - **Sequenced sound chimes** via Android's `ToneGenerator` (no bundled audio assets)
 - **Loss-reason-aware celebrations.** Gave-up, mistake-limit, and Speed-timeout each get their own title, subtitle, and emoji.
 - **Cage-aware hints in Killer.** When the cage constraint alone narrows a cell to one digit, the hint dialog explains in cage terms instead of pretending it's a regular naked single.
+- **Optional auto rule-out.** Dims pad digits that can't go in the selected cell. Off by default, for pure deduction.
+- **Tablet and landscape layout.** Board on the left, controls on the right.
 
 ### Accessibility
 
@@ -121,7 +123,7 @@ app/src/main/java/com/ninersudoku/
 - **`org.json` over `kotlinx.serialization`.** The persistence surface is small (saved game, stats, achievements). `org.json` ships with Android and saves an entire serialisation plugin from being added to the build.
 - **Wrong entries shake but don't stick.** A wrong digit increments the mistake counter and triggers a board shake, but the cell stays empty. Removes the awkward "I see a 7 here but I know it's wrong, do I leave it?" loop.
 - **Killer cages are strictly 2 or 3 cells.** Single-cell cages would double as pre-filled givens and dilute the Killer identity. Larger cages slow the solve loop without adding interesting reasoning. Strict 2- or 3-cell cages keep deductions tractable. A topology-trapped orphan triggers a regen rather than a 4-cell exception.
-- **Killer uses fewer starting clues than Classic** at the same difficulty (32 vs 50 at Beginner, 9 vs 24 at Expert). Cage sums carry part of the deduction load.
+- **Killer uses fewer starting clues than Classic** at the same difficulty (32 vs 50 at Beginner, 17 vs 24 at Expert). Cage sums carry part of the deduction load.
 - **The Killer hint engine is cage-aware.** When the cage constraint alone narrows a cell to one digit, the hint dialog explains in cage terms ("This cage needs 14. With 9 already in, the last cell must be 5") instead of pretending it's a standard naked single.
 - **"New puzzle" generates fresh, never restarts the same puzzle.** A "restart this puzzle" button would let players pre-scout, then run again to fake a best time or unlock Perfectionist/Flawless cheaply. The overflow menu always ships a different puzzle.
 - **Process-death restore via `SharedPreferences`.** Every cell entry persists the full game state to a single key (`saved_game`). `am force-stop` + relaunch lands the player on the menu with a Continue card pointing at the exact board they left.
@@ -134,7 +136,7 @@ app/src/main/java/com/ninersudoku/
 ### Prerequisites
 
 - Android Studio Ladybug or newer
-- JDK 21 (Gradle requires it on AGP 8.7+)
+- JDK 17 or newer (required by AGP 8.7; tested on JDK 21)
 - Android SDK with platform 35 + build-tools 35.0.0
 
 ### Debug build
@@ -199,7 +201,6 @@ Things deferred for v1.x:
 
 - Smarter hint techniques (naked pair, X-Wing) for Hard / Expert
 - Per-mode-per-difficulty win counts (the "Cage Master" achievement currently uses "won Killer at all 5 difficulties" as a proxy for "won 10 Killer puzzles")
-- Tablet-optimised layout — the phone layout works on tablets but doesn't take advantage of the extra width
 - Localisation — strings are inline; needs extraction to `strings.xml` first
 
 ---
